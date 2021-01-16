@@ -101,16 +101,21 @@ class MainWindow(QDialog):
     def TASK(self):
  
  
-        self.tasks = ["MAT185"]
-        self.listWidget.addItems(self.tasks)
+        self.tasks = {"2021/01/16" : "MAT185"}
+        row = self.listWidget.currentRow()
+        self.listWidget.insertItem(row, "MAT185" + "     " + "2021/01/16")
         self.listWidget.setCurrentRow(0)
  
  
     def add(self):
+        date = None
         row = self.listWidget.currentRow()
         text, ok = QInputDialog.getText(self, "To-do List", "Enter Task")
-        if ok and text is not None:
-            self.listWidget.insertItem(row, text)
+        while date == None or len(date) != 10 or date[4] != "/" or date[7] != "/":
+            date, ok2 = QInputDialog.getText(self, "Do by", "Enter Date (yyyy/mm/dd)")
+        if ok and text is not None and ok2 and date is not None:
+            self.listWidget.insertItem(row, text + "     " + date)
+            self.tasks.update({date : text})
         
 
  
@@ -163,7 +168,11 @@ class MainWindow(QDialog):
  
  
     def sort(self):
-        self.listWidget.sortItems()
+        row = self.listWidget.currentRow()
+        sorteditems = sorted(self.tasks.items())
+        self.listWidget.clear()
+        for item in sorteditems:
+            self.listWidget.insertItem(row, item[1] + "     " + item[0])
  
  
  
@@ -214,13 +223,10 @@ class MainWindow(QDialog):
                 
                     if item is not None and text is not None:
                         item.setText(text)
-
                 except:
                     print("Sorry. Could not understand.")
                    
-
             elif command == "remove":
-
 
                 row = self.listWidget.currentRow()
                 item = self.listWidget.item(row)
@@ -231,7 +237,6 @@ class MainWindow(QDialog):
                 del item
                 
             elif command == "up":
-                
 
                 row = self.listWidget.currentRow()
                 if row >= 1:
@@ -249,8 +254,6 @@ class MainWindow(QDialog):
             elif command == "sort":
                 self.listWidget.sortItems()
 
-                
-                    
             elif command == "close":
                 quit()
 
