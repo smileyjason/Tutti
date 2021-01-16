@@ -7,7 +7,7 @@ class MainWindow(QDialog):
 
     def setupUi(self, Dialog):
         self.subWindow = None
-        Dialog.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        #Dialog.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         Dialog.setObjectName("Dialog")
         Dialog.resize(574, 470)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
@@ -27,12 +27,15 @@ class MainWindow(QDialog):
         self.verticalLayout.setObjectName("verticalLayout")
         self.pushButton_add = QtWidgets.QPushButton(Dialog)
         self.pushButton_add.setObjectName("pushButton_add")
+        
         self.verticalLayout.addWidget(self.pushButton_add)
         self.pushButton_edit = QtWidgets.QPushButton(Dialog)
         self.pushButton_edit.setObjectName("pushButton_edit")
+        
         self.verticalLayout.addWidget(self.pushButton_edit)
         self.pushButton_remove = QtWidgets.QPushButton(Dialog)
         self.pushButton_remove.setObjectName("pushButton_remove")
+        
         self.verticalLayout.addWidget(self.pushButton_remove)
         self.pushButton_up = QtWidgets.QPushButton(Dialog)
         self.pushButton_up.setObjectName("pushButton_up")
@@ -102,6 +105,8 @@ class MainWindow(QDialog):
         text, ok = QInputDialog.getText(self, "To-do List", "Enter Task")
         if ok and text is not None:
             self.listWidget.insertItem(row, text)
+        
+
  
  
  
@@ -114,6 +119,7 @@ class MainWindow(QDialog):
                                               QLineEdit.Normal, item.text())
             if ok and string is not None:
                 item.setText(string)
+    
  
  
     def remove(self):
@@ -126,10 +132,10 @@ class MainWindow(QDialog):
         reply = QMessageBox.question(self, "Remove Task", "Do You Want To Remove Task: " + str(item.text()),
                 QMessageBox.Yes|QMessageBox.No)
  
- 
         if reply == QMessageBox.Yes:
             item = self.listWidget.takeItem(row)
             del item
+        
  
  
  
@@ -176,7 +182,7 @@ class MainWindow(QDialog):
         self.newWindow = True
         return self.subWindow
 
-
+    
 class ChildWindow(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
         super().__init__(parent)
