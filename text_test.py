@@ -1,3 +1,6 @@
+################################### hack the north 2021
+
+
 import sys
 
 from PyQt5 import QtGui, QtCore,QtWidgets
@@ -47,7 +50,7 @@ class Main(QtWidgets.QMainWindow):
         self.statusbar = self.statusBar()
     
         # x and y coordinates on the screen, width, height
-        self.setGeometry(100,100,1030,800)
+        self.setGeometry(10,30,500,1030)
     
         self.setWindowTitle("Notepad")
 
