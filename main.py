@@ -210,8 +210,7 @@ class MainWindow(QDialog):
             self.listWidget.insertItem(row + 1, item)
             self.listWidget.setCurrentItem(item)
  
- 
- 
+
     def sort(self):
         row = len(self.tasks.items())
         sorteditems = sorted(self.tasks.items())
