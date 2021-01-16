@@ -308,24 +308,41 @@ class MainWindow(QDialog):
     def saveFileDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getSaveFileName(self,"Save File","","All Files (*);;CSV Files (*.csv)")
-        if fileName:
-            print(fileName)
+        fileName, _ = QFileDialog.getSaveFileName(self,"Save File","","CSV Files (*.csv)")
+        
+        with open(fileName, "w") as fileInput:
+            fileWriter = csv.writer(fileInput, delimiter = ",", quotechar = '"', quoting = csv.QUOTE_MINIMAL) 
+            for row in self.tasks.items():
+                if row:
+                    if row[0] == row[1]:
+                        fileWriter.writerow([row[1]])
+                    else:
+                        fileWriter.writerow([row[1], row[0]])
         
 
         #### MAKE NEW CSV WITH THE CURRENT DICT
 
     def opencsv(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open File","","All Files (*);;CSV Files (*.csv)")
+        fileName, _ = QFileDialog.getOpenFileName(self, "Open File","","CSV Files (*.csv)")
         with open(fileName, "r") as fileInput:
             for row in csv.reader(fileInput):
-                date = row[0].split("\t")[1]
-                text = row[0].split("\t")[0]
-                
-                if date == "":
-                    self.tasks.update({text : text})
-                else:
-                    self.tasks.update({date : text})
+                if row:
+                    print(row)
+                    if "\t" in row[0]:
+                        date = row[0].split("\t")[1]
+                        date = date.replace("-","/")
+                        text = row[0].split("\t")[0]
+                    
+                        if date == "":
+                            self.tasks.update({text : text})
+                        else:
+                            self.tasks.update({date : text})
+                    else:
+                        text = row[0]
+                        if len(row) == 1:
+                            self.tasks.update({text : text})
+                        elif len(row) == 2:
+                            self.tasks.update({row[1] : row[0]})
             self.sort()
                 
     
