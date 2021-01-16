@@ -1,7 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QInputDialog, QDialog, QLineEdit, QMessageBox
+from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QIcon
 import speech_recognition
+import csv
  
  
 class MainWindow(QDialog):
@@ -49,9 +50,22 @@ class MainWindow(QDialog):
         self.verticalLayout.addWidget(self.pushButton_sort)
         spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
+        
+        #Close button
         self.pushButton_close = QtWidgets.QPushButton(Dialog)
         self.pushButton_close.setObjectName("pushButton_close")
         self.verticalLayout.addWidget(self.pushButton_close)
+
+        #Open csv button
+
+        self.pushButton_open = QtWidgets.QPushButton(Dialog)
+        self.pushButton_open.setObjectName("pushButton_open")
+        self.verticalLayout.addWidget(self.pushButton_open)
+
+        #Save csv button
+        self.pushButton_save = QtWidgets.QPushButton(Dialog)
+        self.pushButton_save.setObjectName("pushButton_save")
+        self.verticalLayout.addWidget(self.pushButton_save)
     
         
 
@@ -77,8 +91,11 @@ class MainWindow(QDialog):
         self.pushButton_close.clicked.connect(self.close)
         self.hoverButton.installEventFilter(self)
         self.voiceButton.clicked.connect(self.voicerecognition)
+        self.pushButton_open.clicked.connect(self.opencsv)
+        self.pushButton_save.clicked.connect(self.saveFileDialog)
  
         self.TASK()
+
         
  
     def retranslateUi(self, Dialog):
@@ -94,6 +111,8 @@ class MainWindow(QDialog):
         self.pushButton_close.setText(_translate("Dialog", "Close"))
         self.hoverButton.setText(_translate("Dialog", "Hover"))
         self.voiceButton.setText(_translate("Dialog", "Speech to Text"))
+        self.pushButton_open.setText(_translate("Dialog", "Open"))
+        self.pushButton_save.setText(_translate("Dialog", "Save"))
  
  
  
@@ -283,6 +302,32 @@ class MainWindow(QDialog):
             print(text)       
             return text
 
+    
+        
+
+    def saveFileDialog(self):
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getSaveFileName(self,"Save File","","All Files (*);;CSV Files (*.csv)")
+        if fileName:
+            print(fileName)
+        
+
+        #### MAKE NEW CSV WITH THE CURRENT DICT
+
+    def opencsv(self):
+        fileName, _ = QFileDialog.getOpenFileName(self, "Open File","","All Files (*);;CSV Files (*.csv)")
+        with open(fileName, "r") as fileInput:
+            for row in csv.reader(fileInput):
+                date = row[0].split("\t")[1]
+                text = row[0].split("\t")[0]
+                
+                if date == "":
+                    self.tasks.update({text : text})
+                else:
+                    self.tasks.update({date : text})
+            self.sort()
+                
     
 class ChildWindow(QtWidgets.QMainWindow):
     def __init__(self, parent = None):
