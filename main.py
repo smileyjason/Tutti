@@ -140,11 +140,11 @@ class MainWindow(QDialog):
 
 
         elif ok and text is not None and ok2 and date is not None:
-            self.listWidget.insertItem(row, text + "     " + date)
+            self.listWidget.insertItem(row, text + "     " + date.split(".")[0])
+            while date in self.tasks.keys():
+                date = date + "."
+            
             self.tasks.update({date : text})
-        
-
- 
  
  
     def edit(self):
@@ -153,10 +153,21 @@ class MainWindow(QDialog):
  
         if item is not None:
             string, ok = QInputDialog.getText(self, "To-do List", "Edit Task",
-                                              QLineEdit.Normal, item.text())
+                                              QLineEdit.Normal, item.text().split("     ")[0])
+            deadline = " "
+            while deadline != "" and (len(deadline) != 10 or deadline[4] != "/" or deadline[7] != "/" or not ok2):
+                deadline, ok2 = QInputDialog.getText(self, "To-do List", "Edit Deadline", QLineEdit.Normal, item.text().split("     ")[1])
+            
             if ok and string is not None:
-                item.setText(string)
-    
+                if deadline == "":
+                    item.setText(string)
+                    text = str(item.text())
+                    self.tasks.update({text : text})
+                
+                else:
+                    item.setText(string + "     " + deadline)
+                    self.tasks.update({deadline : string})
+                
  
  
     def remove(self):
@@ -171,10 +182,18 @@ class MainWindow(QDialog):
  
         if reply == QMessageBox.Yes:
             item = self.listWidget.takeItem(row)
-            del item
-        
- 
- 
+            text = str(item.text())
+
+            if len(text.split("     ")) == 1:
+                del self.tasks[text.split("     ")[0]]
+                del item
+            else:
+                date = text.split("     ")[1]
+                task = text.split("     ")[0]
+                while self.tasks[date] != task:
+                    date = date + "."
+                del self.tasks[date]
+                del item
  
     def up(self):
         row = self.listWidget.currentRow()
@@ -202,7 +221,7 @@ class MainWindow(QDialog):
             if item[0] == item[1]:
                 nodeadline.append(item)
             else:
-                self.listWidget.insertItem(row, item[1] + "     " + item[0])
+                self.listWidget.insertItem(row, item[1].split(".")[0] + "     " + item[0])
         for nodead in nodeadline:
             self.listWidget.insertItem(row, nodead[1])
  
@@ -335,13 +354,18 @@ class MainWindow(QDialog):
                         if date == "":
                             self.tasks.update({text : text})
                         else:
+                            while date in self.tasks.keys():
+                                date = date + "."    
                             self.tasks.update({date : text})
                     else:
                         text = row[0]
                         if len(row) == 1:
                             self.tasks.update({text : text})
                         elif len(row) == 2:
-                            self.tasks.update({row[1] : row[0]})
+                            date = row[1]
+                            while date in self.tasks.keys():
+                                date = date + "."
+                            self.tasks.update({date : row[0]})
             self.sort()
                 
     
