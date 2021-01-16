@@ -10,8 +10,8 @@ from PyQt5.QtWidgets import *
 class Main(QtWidgets.QMainWindow):
  
     def __init__(self, parent = None):
-        QtWidgets.QMainWindow.__init__(self,parent)
- 
+        #QtWidgets.QMainWindow.__init__(self,parent)
+        QtWidgets.QMainWindow.__init__(self, None, QtCore.Qt.WindowStaysOnTopHint)
         self.initUI()
 
      ############################################################################
