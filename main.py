@@ -90,7 +90,7 @@ class MainWindow(QDialog):
         self.pushButton_remove.setText(_translate("Dialog", "Remove"))
         self.pushButton_up.setText(_translate("Dialog", "Up"))
         self.pushButton_down.setText(_translate("Dialog", "Down"))
-        self.pushButton_sort.setText(_translate("Dialog", "Sort"))
+        self.pushButton_sort.setText(_translate("Dialog", "Sort by Date"))
         self.pushButton_close.setText(_translate("Dialog", "Close"))
         self.hoverButton.setText(_translate("Dialog", "Hover"))
         self.voiceButton.setText(_translate("Dialog", "Speech to Text"))
@@ -108,12 +108,19 @@ class MainWindow(QDialog):
  
  
     def add(self):
-        date = None
+        date = " "
+        
         row = self.listWidget.currentRow()
         text, ok = QInputDialog.getText(self, "To-do List", "Enter Task")
-        while date == None or len(date) != 10 or date[4] != "/" or date[7] != "/":
+        while date != "" and (len(date) != 10 or date[4] != "/" or date[7] != "/" or not ok2):
             date, ok2 = QInputDialog.getText(self, "Do by", "Enter Date (yyyy/mm/dd)")
-        if ok and text is not None and ok2 and date is not None:
+            
+        if ok and text is not None and date == "":
+            self.listWidget.insertItem(row, text)
+            self.tasks.update({text : text})
+
+
+        elif ok and text is not None and ok2 and date is not None:
             self.listWidget.insertItem(row, text + "     " + date)
             self.tasks.update({date : text})
         
@@ -168,12 +175,17 @@ class MainWindow(QDialog):
  
  
     def sort(self):
-        row = self.listWidget.currentRow()
+        row = len(self.tasks.items())
         sorteditems = sorted(self.tasks.items())
         self.listWidget.clear()
+        nodeadline = []
         for item in sorteditems:
-            self.listWidget.insertItem(row, item[1] + "     " + item[0])
- 
+            if item[0] == item[1]:
+                nodeadline.append(item)
+            else:
+                self.listWidget.insertItem(row, item[1] + "     " + item[0])
+        for nodead in nodeadline:
+            self.listWidget.insertItem(row, nodead[1])
  
  
     def close(self):
