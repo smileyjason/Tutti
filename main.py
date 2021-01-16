@@ -220,63 +220,39 @@ class MainWindow(QDialog):
                    
 
             elif command == "remove":
-                try:
-                    text = self.speechtotext()
 
-                    row = self.listWidget.currentRow()
-                    item = self.listWidget.item(row)
+
+                row = self.listWidget.currentRow()
+                item = self.listWidget.item(row)
             
-                    if item is None:
-                        return
-                    item = self.listWidget.takeItem(row)
-                    del item
-
-                except:
-                    print("Sorry. Could not understand.")
+                if item is None:
+                    return
+                item = self.listWidget.takeItem(row)
+                del item
                 
             elif command == "up":
-                try:
-                    text = self.speechtotext()
+                
 
-                    row = self.listWidget.currentRow()
-                    if row >= 1:
-                        item = self.listWidget.takeItem(row)
-                        self.listWidget.insertItem(row - 1, item)
-                        self.listWidget.setCurrentItem(item)
+                row = self.listWidget.currentRow()
+                if row >= 1:
+                    item = self.listWidget.takeItem(row)
+                    self.listWidget.insertItem(row - 1, item)
+                    self.listWidget.setCurrentItem(item)
 
-                except:
-                    print("Sorry. Could not understand.")
-            
             elif command == "down":
-                try:
-                    text = self.speechtotext()
-
-                    row = self.listWidget.currentRow()
-                    if row < self.listWidget.count() - 1:
-                        item = self.listWidget.takeItem(row)
-                        self.listWidget.insertItem(row + 1, item)
-                        self.listWidget.setCurrentItem(item)
-
-                except:
-                    print("Sorry. Could not understand.")
+                row = self.listWidget.currentRow()
+                if row < self.listWidget.count() - 1:
+                    item = self.listWidget.takeItem(row)
+                    self.listWidget.insertItem(row + 1, item)
+                    self.listWidget.setCurrentItem(item)
 
             elif command == "sort":
-                try:
-                    text = self.speechtotext()
+                self.listWidget.sortItems()
 
-                    self.listWidget.sortItems()
-
-                except:
-                    print("Sorry. Could not understand.")
+                
                     
             elif command == "close":
-                try:
-                    text = self.speechtotext()
-
-                    quit()
-
-                except:
-                    print("Sorry. Could not understand.")
+                quit()
 
 
         except Exception as ex:
