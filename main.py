@@ -327,7 +327,6 @@ class MainWindow(QDialog):
         with open(fileName, "r") as fileInput:
             for row in csv.reader(fileInput):
                 if row:
-                    print(row)
                     if "\t" in row[0]:
                         date = row[0].split("\t")[1]
                         date = date.replace("-","/")
