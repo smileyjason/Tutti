@@ -78,9 +78,9 @@ class MainWindow(QDialog):
         self.verticalLayout.addItem(spacerItem)
 
         #toggle theme button
-        self.pushButton_toggletheme = QtWidgets.QPushButton(Dialog)
-        self.pushButton_toggletheme.setObjectName("pushButton_toggletheme")
-        self.verticalLayout.addWidget(self.pushButton_toggletheme)
+        #self.pushButton_toggletheme = QtWidgets.QPushButton(Dialog)
+        #self.pushButton_toggletheme.setObjectName("pushButton_toggletheme")
+        #self.verticalLayout.addWidget(self.pushButton_toggletheme)
 
         #Open csv button
 
@@ -127,7 +127,7 @@ class MainWindow(QDialog):
         self.pushButton_open.clicked.connect(self.opencsv)
         self.pushButton_save.clicked.connect(self.saveFileDialog)
         self.pushButton_quit.clicked.connect(self.quit)
-        self.pushButton_toggletheme.clicked.connect(self.toggletheme)
+        #self.pushButton_toggletheme.clicked.connect(self.toggletheme)
  
         self.TASK()
 
@@ -146,7 +146,7 @@ class MainWindow(QDialog):
         self.pushButton_down.setText(_translate("Dialog", "Down"))
         self.pushButton_sort.setText(_translate("Dialog", "Sort"))
         self.pushButton_hide.setText(_translate("Dialog", "Hide"))
-        self.pushButton_toggletheme.setText(_translate("Dialog", "Toggle Theme"))
+        #self.pushButton_toggletheme.setText(_translate("Dialog", "Toggle Theme"))
         self.pushButton_quit.setText(_translate("Dialog", "Quit"))
         self.voiceButton.setText(_translate("Dialog", "Speech to Text"))
         self.pushButton_open.setText(_translate("Dialog", "Load"))
@@ -270,26 +270,8 @@ class MainWindow(QDialog):
     
     #TO DO
 
-    def toggletheme(self):
-        if self.theme == 7:
-            self.theme == 1
-        else:
-            self.theme += 1
-
-        if self.theme == 1:
-            pass
-        elif self.theme == 2:
-            pass
-        elif self.theme == 3: 
-            pass
-        elif self.theme == 4:
-            pass
-        elif self.theme == 5:
-            pass
-        elif self.theme == 6:
-            pass
-        elif self.theme == 7:
-            pass
+    #def toggletheme(self):
+        #pass
 
     #def closewin(self):
         #self.close()
@@ -322,7 +304,7 @@ class MainWindow(QDialog):
                 command = text.split()[0]
                 text = text[text.index(" ") + 1:]
 
-            if command == "add":
+            if command == "add" or command == "ad":
                 reply = QMessageBox.question(self, "Add Task", "Do You Want To Add Task: " + text, QMessageBox.Yes|QMessageBox.No)
                 if reply == QMessageBox.Yes:
                         
@@ -458,6 +440,9 @@ class ChildWindow(QtWidgets.QMainWindow):
         super().__init__(children)
         self.children = children
         self.subWindow = None
+        scriptDir = os.path.dirname(os.path.realpath(__file__))
+        self.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + 'tutti.png'))
+        self.setWindowTitle("Tutti")
         self.setGeometry(200,400,100,20)
         #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         #self.setFixedSize(100, 50)
