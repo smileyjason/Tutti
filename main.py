@@ -15,6 +15,9 @@ class MainWindow(QDialog):
 
     def setupUi(self, Dialog):
         self.theme = 1
+        Dialog.setStyleSheet("background-color: white;")
+
+
         self.subWindow = None
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.Tool)
@@ -78,9 +81,9 @@ class MainWindow(QDialog):
         self.verticalLayout.addItem(spacerItem)
 
         #toggle theme button
-        #self.pushButton_toggletheme = QtWidgets.QPushButton(Dialog)
-        #self.pushButton_toggletheme.setObjectName("pushButton_toggletheme")
-        #self.verticalLayout.addWidget(self.pushButton_toggletheme)
+        self.pushButton_toggletheme = QtWidgets.QPushButton(Dialog)
+        self.pushButton_toggletheme.setObjectName("pushButton_toggletheme")
+        self.verticalLayout.addWidget(self.pushButton_toggletheme)
 
         #Open csv button
 
@@ -127,7 +130,7 @@ class MainWindow(QDialog):
         self.pushButton_open.clicked.connect(self.opencsv)
         self.pushButton_save.clicked.connect(self.saveFileDialog)
         self.pushButton_quit.clicked.connect(self.quit)
-        #self.pushButton_toggletheme.clicked.connect(self.toggletheme)
+        self.pushButton_toggletheme.clicked.connect(self.toggletheme)
  
         self.TASK()
 
@@ -146,7 +149,7 @@ class MainWindow(QDialog):
         self.pushButton_down.setText(_translate("Dialog", "Down"))
         self.pushButton_sort.setText(_translate("Dialog", "Sort"))
         self.pushButton_hide.setText(_translate("Dialog", "Hide"))
-        #self.pushButton_toggletheme.setText(_translate("Dialog", "Toggle Theme"))
+        self.pushButton_toggletheme.setText(_translate("Dialog", "Toggle Theme"))
         self.pushButton_quit.setText(_translate("Dialog", "Quit"))
         self.voiceButton.setText(_translate("Dialog", "Speech to Text"))
         self.pushButton_open.setText(_translate("Dialog", "Load"))
@@ -270,8 +273,40 @@ class MainWindow(QDialog):
     
     #TO DO
 
-    #def toggletheme(self):
-        #pass
+    def toggletheme(self):
+        if self.theme == 10:
+            self.theme = 1
+            Dialog.setStyleSheet("background-color: white;") #White
+        elif self.theme == 1:
+            self.theme = 2
+            Dialog.setStyleSheet("background-color: #707479;") #Grey
+        elif self.theme == 2:
+            self.theme = 3
+            Dialog.setStyleSheet("background-color: #FFC6D2;") #Pink
+        elif self.theme == 3:
+            self.theme = 4
+            Dialog.setStyleSheet("background-color: #F78C80;") #Red
+        elif self.theme == 4:
+            self.theme = 5
+            Dialog.setStyleSheet("background-color: #FFB68A;") #Orange
+        elif self.theme == 5:
+            self.theme = 6
+            Dialog.setStyleSheet("background-color: #FFEEB4;") #Yellow
+        elif self.theme == 6:
+            self.theme = 7
+            Dialog.setStyleSheet("background-color: #CEF4B5;") #Green
+        elif self.theme == 7:
+            self.theme = 8
+            Dialog.setStyleSheet("background-color: #BDEEFB;") #Blue
+        elif self.theme == 8:
+            self.theme = 9
+            Dialog.setStyleSheet("background-color: #BAC8FF;") #Indigo
+        elif self.theme == 9:
+            self.theme = 10
+            Dialog.setStyleSheet("background-color: #DEC7FF;") #Purple
+        else:
+            self.theme == 1
+            self.setStyleSheet("background-color: white;")
 
     #def closewin(self):
         #self.close()
@@ -442,15 +477,21 @@ class ChildWindow(QtWidgets.QMainWindow):
         self.subWindow = None
         scriptDir = os.path.dirname(os.path.realpath(__file__))
         self.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + 'tutti.png'))
+        
+        
         self.setWindowTitle("Tutti")
-        self.setGeometry(200,400,100,20)
+        self.setGeometry(200,400,60,60)
         #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        #self.setFixedSize(100, 50)
+        self.setFixedSize(60, 60)
        
 
-       #makes the button
-        self.button = QtWidgets.QPushButton("Hover", self)
-        self.button.setGeometry(1,1,50,20) # x,y, width, height
+        #makes the button
+        self.button = QtWidgets.QPushButton("", self)
+        self.button.setGeometry(1,1,60,60) # x,y, width, height
+        self.button.setFlat = True
+        self.button.autoFillBackground = True
+        self.button.setStyleSheet("background-color: white")
+        self.button.setIcon(QtGui.QIcon(scriptDir + os.path.sep + 'tutti60.png'))
         self.button.installEventFilter(self)
         sg = QDesktopWidget().availableGeometry() # height of the screen
         self.move(0,(sg.height() - self.geometry().height())/2)
