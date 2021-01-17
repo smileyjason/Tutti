@@ -1,11 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QInputDialog, QDialog, QLineEdit, QMessageBox
 from PyQt5.QtGui import QIcon
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtCore import Qt, QSize, QPoint
 from PyQt5.QtWidgets import *
-from PyQt5.QtWidgets import QInputDialog, QDialog, QLineEdit, QMessageBox
-import speech_recognition   
+import speech_recognition
 import csv
 import os 
 import ctypes
