@@ -2,14 +2,13 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QInputDialog, QDialog, QLineEdit, QMessageBox
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QInputDialog, QDialog, QLineEdit, QMessageBox
 import speech_recognition   
 import csv
 import os 
 import ctypes
- 
  
 class MainWindow(QDialog):
 
@@ -152,7 +151,7 @@ class MainWindow(QDialog):
         self.pushButton_up.setStyleSheet("font: 8pt Open Sans")
         self.pushButton_down.setText(_translate("Dialog", "Down"))
         self.pushButton_down.setStyleSheet("font: 8pt Open Sans")
-        self.pushButton_sort.setText(_translate("Dialog", "Sort"))
+        self.pushButton_sort.setText(_translate("Dialog", "Order"))
         self.pushButton_sort.setStyleSheet("font: 8pt Open Sans")
         self.pushButton_hide.setText(_translate("Dialog", "Hide"))
         self.pushButton_hide.setStyleSheet("font: 8pt Open Sans")
@@ -180,7 +179,7 @@ class MainWindow(QDialog):
         row = self.listWidget.currentRow()
         text, ok = QInputDialog.getText(self, "To-do List", "Enter Task")
         while date != "" and (len(date) != 10 or date[4] != "/" or date[7] != "/" or not ok2):
-            date, ok2 = QInputDialog.getText(self, "Do by", "Enter Date (yyyy/mm/dd)")
+            date, ok2 = QInputDialog.getText(self, "Due Date", "Enter Date (yyyy/mm/dd)")
             
         if ok and text is not None and date == "":
             self.listWidget.insertItem(row, text)
@@ -198,7 +197,10 @@ class MainWindow(QDialog):
     def edit(self):
         row = self.listWidget.currentRow()
         item = self.listWidget.item(row)
- 
+        #item = self.listWidget.takeItem(row)
+        text = str(item.text())
+            
+        
         if item is not None:
             string, ok = QInputDialog.getText(self, "To-do List", "Edit Task",
                                               QLineEdit.Normal, item.text().split("     ")[0])
@@ -209,12 +211,21 @@ class MainWindow(QDialog):
             if ok and string is not None:
                 if deadline == "":
                     item.setText(string)
-                    text = str(item.text())
-                    self.tasks.update({text : text})
+                    
+                    newtext = str(item.text())
+                    if len(text.split("     ")) == 1:
+                        del self.tasks[text.split("     ")[0]]
+                    self.tasks.update({newtext : newtext})
                 
                 else:
                     item.setText(string + "     " + deadline)
+                    if len(text.split("     ")) != 1:
+                        date = text.split("     ")[1]
+                        task = text.split("     ")[0]
+                        while self.tasks[date] != task:
+                            date = date + "."
                     self.tasks.update({deadline : string})
+                
     
  
     def remove(self):
@@ -268,7 +279,7 @@ class MainWindow(QDialog):
             if item[0] == item[1]:
                 nodeadline.append(item)
             else:
-                self.listWidget.insertItem(row, item[1].split(".")[0] + "     " + item[0])
+                self.listWidget.insertItem(row, item[1].split(".")[0] + "     " + item[0].split(".")[0])
         for nodead in nodeadline:
             self.listWidget.insertItem(row, nodead[1])
  
@@ -494,6 +505,7 @@ class ChildWindow(QtWidgets.QMainWindow):
         self.setGeometry(200,400,60,60)
         #self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setFixedSize(60, 60)
+        self.setWindowOpacity(0.4)
        
 
         #makes the button
@@ -503,9 +515,10 @@ class ChildWindow(QtWidgets.QMainWindow):
         self.button.autoFillBackground = True
         self.button.setStyleSheet("background-color: white")
         self.button.setIcon(QtGui.QIcon(scriptDir + os.path.sep + 'tutti60.png'))
+        self.button.setIconSize(QSize(60, 60))
         self.button.installEventFilter(self)
         sg = QDesktopWidget().availableGeometry() # height of the screen
-        self.move(0,(sg.height() - self.geometry().height())/2)
+        self.move(sg.width()-200, 0)
         self.show()
 
     
