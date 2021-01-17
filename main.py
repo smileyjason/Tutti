@@ -7,6 +7,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtWidgets import QInputDialog, QDialog, QLineEdit, QMessageBox
 import speech_recognition   
 import csv
+import os 
+import ctypes
  
  
 class MainWindow(QDialog):
@@ -15,10 +17,16 @@ class MainWindow(QDialog):
         self.theme = 1
         self.subWindow = None
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(self.windowFlags() & ~QtCore.Qt.Tool)
         Dialog.setObjectName("Dialog")
         Dialog.setGeometry(10,40,300,400)
         Dialog.resize(300, 400) #width and height
         Dialog.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        Dialog.setWindowFlags(Dialog.windowFlags() & ~QtCore.Qt.Tool)
+        
+        myappid = 'tutti' # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout_2.setSpacing(5)
@@ -122,6 +130,8 @@ class MainWindow(QDialog):
         self.pushButton_toggletheme.clicked.connect(self.toggletheme)
  
         self.TASK()
+
+        
         #Dialog.show()
         
  
@@ -142,7 +152,7 @@ class MainWindow(QDialog):
         self.pushButton_open.setText(_translate("Dialog", "Load"))
         self.pushButton_save.setText(_translate("Dialog", "Save"))
  
-
+        
     def TASK(self):
         self.tasks = {}
         row = self.listWidget.currentRow()
@@ -248,7 +258,7 @@ class MainWindow(QDialog):
         for nodead in nodeadline:
             self.listWidget.insertItem(row, nodead[1])
  
- 
+
     def quit(self):
         quit()
  
@@ -492,9 +502,31 @@ class ChildWindow(QtWidgets.QMainWindow):
  
 if __name__ == "__main__":
     import sys
+   
     app = QtWidgets.QApplication(sys.argv)
     Dialog = QtWidgets.QDialog()
     ui = MainWindow()
     ui.setupUi(Dialog)
+    scriptDir = os.path.dirname(os.path.realpath(__file__))
+    Dialog.setWindowIcon(QtGui.QIcon(scriptDir + os.path.sep + 'tutti.png'))
+
+    #trayIcon = QtWidgets.QSystemTrayIcon(QtGui.QIcon(scriptDir + os.path.sep + 'tutti.png'), Dialog) 
+    #trayIcon.show()
+    #trayIcon.setToolTip("Hi!")
+
+    # Creating the options 
+    #menu = QMenu() 
+    #option1 = QAction("Open Tutti") 
+    #option2 = QAction("Quit") 
+    #menu.addAction(option1) 
+    #menu.addAction(option2) 
+    
+    # Even triggers 
+    #option2.triggered.connect(Dialog.close) 
+    #option1.triggered.connect(Dialog.showNormal)
+    
+    # Adding options to the System Tray 
+    #trayIcon.setContextMenu(menu) 
+  
     Dialog.show()
     sys.exit(app.exec_())
