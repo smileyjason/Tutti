@@ -12,11 +12,13 @@ import csv
 class MainWindow(QDialog):
 
     def setupUi(self, Dialog):
+        self.theme = 1
         self.subWindow = None
-        #Dialog.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         Dialog.setObjectName("Dialog")
         Dialog.setGeometry(10,40,300,400)
         Dialog.resize(300, 400) #width and height
+        Dialog.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(Dialog)
         self.verticalLayout_2.setContentsMargins(5, 5, 5, 5)
         self.verticalLayout_2.setSpacing(5)
@@ -67,10 +69,10 @@ class MainWindow(QDialog):
         spacerItem = QtWidgets.QSpacerItem(5, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.verticalLayout.addItem(spacerItem)
 
-         #Q2T button
-        self.pushButton_Q2T = QtWidgets.QPushButton(Dialog)
-        self.pushButton_Q2T.setObjectName("pushButton_Q2T")
-        self.verticalLayout.addWidget(self.pushButton_Q2T)
+        #toggle theme button
+        self.pushButton_toggletheme = QtWidgets.QPushButton(Dialog)
+        self.pushButton_toggletheme.setObjectName("pushButton_toggletheme")
+        self.verticalLayout.addWidget(self.pushButton_toggletheme)
 
         #Open csv button
 
@@ -117,6 +119,7 @@ class MainWindow(QDialog):
         self.pushButton_open.clicked.connect(self.opencsv)
         self.pushButton_save.clicked.connect(self.saveFileDialog)
         self.pushButton_quit.clicked.connect(self.quit)
+        self.pushButton_toggletheme.clicked.connect(self.toggletheme)
  
         self.TASK()
         #Dialog.show()
@@ -124,7 +127,7 @@ class MainWindow(QDialog):
  
     def retranslateUi(self, Dialog):
         _translate = QtCore.QCoreApplication.translate
-        Dialog.setWindowTitle(_translate("Dialog", "To-do List"))
+        Dialog.setWindowTitle(_translate("Dialog", "Tutti"))
         Dialog.setWindowIcon(QIcon("icon.png"))
         self.pushButton_add.setText(_translate("Dialog", "Add"))
         self.pushButton_edit.setText(_translate("Dialog", "Edit"))
@@ -133,19 +136,17 @@ class MainWindow(QDialog):
         self.pushButton_down.setText(_translate("Dialog", "Down"))
         self.pushButton_sort.setText(_translate("Dialog", "Sort"))
         self.pushButton_hide.setText(_translate("Dialog", "Hide"))
-        self.pushButton_Q2T.setText(_translate("Dialog", "Q2T"))
+        self.pushButton_toggletheme.setText(_translate("Dialog", "Toggle Theme"))
         self.pushButton_quit.setText(_translate("Dialog", "Quit"))
         self.voiceButton.setText(_translate("Dialog", "Speech to Text"))
-        self.pushButton_open.setText(_translate("Dialog", "Open"))
+        self.pushButton_open.setText(_translate("Dialog", "Load"))
         self.pushButton_save.setText(_translate("Dialog", "Save"))
  
 
     def TASK(self):
- 
- 
-        self.tasks = {"2021/01/16" : "MAT185"}
+        self.tasks = {}
         row = self.listWidget.currentRow()
-        self.listWidget.insertItem(row, "MAT185" + "     " + "2021/01/16")
+        #self.listWidget.insertItem(row, "Task" + "     " + "Deadline")
         self.listWidget.setCurrentRow(0)
  
  
@@ -256,7 +257,30 @@ class MainWindow(QDialog):
         Dialog.close()
         self.callAnotherQMainWindow()
         return True
-        
+    
+    #TO DO
+
+    def toggletheme(self):
+        if self.theme == 7:
+            self.theme == 1
+        else:
+            self.theme += 1
+
+        if self.theme == 1:
+            pass
+        elif self.theme == 2:
+            pass
+        elif self.theme == 3: 
+            pass
+        elif self.theme == 4:
+            pass
+        elif self.theme == 5:
+            pass
+        elif self.theme == 6:
+            pass
+        elif self.theme == 7:
+            pass
+
     #def closewin(self):
         #self.close()
 
@@ -281,44 +305,51 @@ class MainWindow(QDialog):
     def voicerecognition(self):
         try:
             # read the audio data from the default microphone
-            command = self.speechtotext()
+            text = self.speechtotext()
+            if " " not in text:
+                command = text
+            else:
+                command = text.split()[0]
+                text = text[text.index(" ") + 1:]
 
             if command == "add":
-                try:
-                    text = self.speechtotext()
-
+                reply = QMessageBox.question(self, "Add Task", "Do You Want To Add Task: " + text, QMessageBox.Yes|QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                        
                     row = self.listWidget.currentRow()
                     if text is not None:
                         self.listWidget.insertItem(row, text)
-
-                except:
-                    print("Sorry. Could not understand.")
-
+                    else:
+                        return
+                else:
+                    return
 
             elif command == "edit":
-                try:
-                    text = self.speechtotext()
-
+                reply = QMessageBox.question(self, "Edit Task", "Do You Want To Edit Task To: " + text, QMessageBox.Yes|QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                        
                     row = self.listWidget.currentRow()
                     item = self.listWidget.item(row)
-                
                     if item is not None and text is not None:
                         item.setText(text)
-                except:
-                    print("Sorry. Could not understand.")
-                   
-            elif command == "remove":
-
-                row = self.listWidget.currentRow()
-                item = self.listWidget.item(row)
-            
-                if item is None:
+                    else:
+                        return
+                else:
                     return
-                item = self.listWidget.takeItem(row)
-                del item
-                
+                    
+            elif command == "remove":
+                reply = QMessageBox.question(self, "Remove Task", "Do You Want To Remove Task: " + text, QMessageBox.Yes|QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                       
+                    row = self.listWidget.currentRow()
+                    item = self.listWidget.item(row)
+                    if item is None:
+                        return
+                    else:
+                        item = self.listWidget.takeItem(row)
+                        del item
+                    
             elif command == "up":
-
                 row = self.listWidget.currentRow()
                 if row >= 1:
                     item = self.listWidget.takeItem(row)
@@ -338,9 +369,15 @@ class MainWindow(QDialog):
             elif command == "close":
                 quit()
 
-
+            else:
+                reply = QMessageBox.question(self, "Error", "Here's what I heard: " + "\"" + text + "\"", QMessageBox.Ok)
+                return
+            
         except Exception as ex:
-            print("Sorry. Could not understand.")
+            reply = QMessageBox.question(self, "Sorry", "Sorry. I didn't catch that.", QMessageBox.Ok)
+            return
+        
+
 
     def speechtotext(self):
         recognizer = speech_recognition.Recognizer()
@@ -353,10 +390,12 @@ class MainWindow(QDialog):
             return text
 
     def saveFileDialog(self):
-            options = QFileDialog.Options()
-            options |= QFileDialog.DontUseNativeDialog
-            fileName, _ = QFileDialog.getSaveFileName(self,"Save File","","CSV Files (*.csv)")
-            
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        
+        fileName, _ = QFileDialog.getSaveFileName(self,"Save File","","CSV Files (*.csv)")
+        
+        try:
             with open(fileName, "w") as fileInput:
                 fileWriter = csv.writer(fileInput, delimiter = ",", quotechar = '"', quoting = csv.QUOTE_MINIMAL) 
                 for row in self.tasks.items():
@@ -365,35 +404,42 @@ class MainWindow(QDialog):
                             fileWriter.writerow([row[1]])
                         else:
                             fileWriter.writerow([row[1], row[0]])
+        except:
+            return
             
 
-            #### MAKE NEW CSV WITH THE CURRENT DICT
+        #### MAKE NEW CSV WITH THE CURRENT DICT
+
     def opencsv(self):
-        fileName, _ = QFileDialog.getOpenFileName(self, "Open File","","CSV Files (*.csv)")
-        with open(fileName, "r") as fileInput:
-            for row in csv.reader(fileInput):
-                if row:
-                    if "\t" in row[0]:
-                        date = row[0].split("\t")[1]
-                        date = date.replace("-","/")
-                        text = row[0].split("\t")[0]
-                    
-                        if date == "":
-                            self.tasks.update({text : text})
+        fileName, _ = QFileDialog.getOpenFileName(self, "Load File","","CSV Files (*.csv)")
+        
+        try:
+            with open(fileName, "r") as fileInput:
+                for row in csv.reader(fileInput):
+                    if row:
+                        if "\t" in row[0]:
+                            date = row[0].split("\t")[1]
+                            date = date.replace("-","/")
+                            text = row[0].split("\t")[0]
+                        
+                            if date == "":
+                                self.tasks.update({text : text})
+                            else:
+                                while date in self.tasks.keys():
+                                    date = date + "."    
+                                self.tasks.update({date : text})
                         else:
-                            while date in self.tasks.keys():
-                                date = date + "."    
-                            self.tasks.update({date : text})
-                    else:
-                        text = row[0]
-                        if len(row) == 1:
-                            self.tasks.update({text : text})
-                        elif len(row) == 2:
-                            date = row[1]
-                            while date in self.tasks.keys():
-                                date = date + "."
-                            self.tasks.update({date : row[0]})
-            self.sort()
+                            text = row[0]
+                            if len(row) == 1:
+                                self.tasks.update({text : text})
+                            elif len(row) == 2:
+                                date = row[1]
+                                while date in self.tasks.keys():
+                                    date = date + "."
+                                self.tasks.update({date : row[0]})
+                self.sort()
+        except:
+            return
                 
 
     
