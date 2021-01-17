@@ -221,6 +221,7 @@ class MainWindow(QDialog):
                         task = text.split("     ")[0]
                         while self.tasks[date] != task:
                             date = date + "."
+                        del self.tasks[date]
                     self.tasks.update({deadline : string})
                 
     
@@ -416,8 +417,16 @@ class MainWindow(QDialog):
                 quit()
 
             else:
-                reply = QMessageBox.question(self, "Error", "Here's what I heard: " + "\"" + text + "\"", QMessageBox.Ok)
-                return
+                reply = QMessageBox.question(self, "Add Task", "Do You Want To Add Task: " + text, QMessageBox.Yes|QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                        
+                    row = self.listWidget.currentRow()
+                    if text is not None:
+                        self.listWidget.insertItem(row, text)
+                    else:
+                        return
+                else:
+                    return
             
         except Exception as ex:
             reply = QMessageBox.question(self, "Sorry", "Sorry. I didn't catch that.", QMessageBox.Ok)
